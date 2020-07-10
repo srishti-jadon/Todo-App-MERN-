@@ -20,7 +20,7 @@ class TodoItem extends React.Component{
                         Deadline : {this.props.deadline}
                         </div>
                     <div className = "anchor_button">
-                        <button className="del_btn option_button" value={this.props.id} onClick = {(e) =>this.props.deleteFun(e.target.value)}>
+                        <button className="del_btn option_button"  onClick = {() =>this.props.deleteFun(this.props.id)}>
                             <i className="fa fa-trash-o" aria-hidden="true"></i>
                             Delete
                         </button>
@@ -29,7 +29,7 @@ class TodoItem extends React.Component{
                             <i className="fa fa-check-square-o" aria-hidden="true"></i>
                             Mark as Done
                         </button>
-                        <button className="edit_btn option_button" onClick={() => this.props.editFun(this.props.title,this.props.description,this.props.deadline)}>
+                        <button className="edit_btn option_button" onClick={() => this.props.editFun(this.props.id,this.props.title,this.props.description,this.props.deadline)}>
                             <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
                             Edit
                         </button>

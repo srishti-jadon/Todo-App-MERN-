@@ -8,10 +8,31 @@ class TodoList extends React.Component{
         taskTitle: "",
         taskDescription : "",
         taskDeadline : "",
-        todoItems: [],
-        
+        todoItems: []
+
     }
 
+    async componentDidMount(){
+
+        console.log("entered mount");
+
+        const url = "http://localhost:5000/api/todo/showAllTask";
+        let response = await fetch(url);
+        let data = await response.json();
+        
+        console.log(data.todoList);
+        // console.log(data.todoList.length);
+        
+        this.setState({
+            todoItems :data.todoList,
+            taskTitle:"",
+            taskDescription:"",
+            taskDeadline:""
+        })
+
+        // console.log("component" + this.state.taskTitle);
+        // console.log("component" + this.state.todoItems);
+    }
     
     render(){
 
@@ -43,17 +64,17 @@ class TodoList extends React.Component{
 
         var listOfItems = this.state.todoItems.map(item =>(
             <TodoItem 
-                id ={item.id}
+                key ={item._id}
+                id = {item._id}
                 title={item.title}
                 description ={item.description}
                 deadline = {item.deadline}
                 deleteFun= {this.deleteTodoItem}
-                // editFun = {this.editTodoItem} 
-            />
-                        
+                componentFun = {this.componentDidMount}
+                editFun = {this.editTodoItem} 
+            />                        
         )
-        )
-
+        );
 
         return(
             
@@ -86,7 +107,7 @@ class TodoList extends React.Component{
         })
     }
 
-    async addTodoItem(){
+     addTodoItem(){
 
         var url = "http://localhost:5000/api/todo/addTask";
 
@@ -101,7 +122,7 @@ class TodoList extends React.Component{
                 "Content-type" : "application/json; charset=UTF-8"
             }
         })
-        .then(()=> this.showTasks())
+        .then(()=> this.componentDidMount())
         
     
         // var newTodoItemsArray = [...this.state.todoItems];
@@ -120,31 +141,9 @@ class TodoList extends React.Component{
 
         // })
     }
-
-    async showTasks(){
-
-        const url = "http://localhost:5000/api/todo/showAllTask"
-        var response = await fetch(url);
-        var data = await response.json();
-        var test = [];
-        console.log(data);
-        
-        for (var i=0; i< data.length; i++)
-        {
-            test.push(data[i])
-        }
-
-        this.setState({
-            todoItems :test,
-            taskTitle:"",
-            taskDescription:"",
-            taskDeadline:""
-        })
-
-    }
     
     deleteTodoItem(id){
-        const url = "http://localhost:5000/api/todo/delete_edit_markTask/" + id;
+        var url = "http://localhost:5000/api/todo/delete_edit_markTask/" + id;
         console.log(url + id );
 
         console.log("entered delete function");
@@ -160,20 +159,60 @@ class TodoList extends React.Component{
                 "Content-type": "application/json; charset = UTF-8"
             }
         })
-        .then( console.log("deletion successful"))
+        .then(()=> this.componentFun())
 
         
     }
 
-    // editTodoItem(title,description,deadline){
+    // editTodoItem(id,editTitle,editDescription,editDeadline){
 
     //     this.setState({
-    //         taskTitle: title,
-    //         taskDescription: description,
-    //         taskDeadline: deadline
+    //         taskTitle: editTitle,
+    //         taskDescription: editDescription,
+    //         taskDeadline: editDeadline
     //     })
 
+    //     var url = "http://localhost:5000/api/todo/delete_edit_markTask/" + id;
+    //     console.log(url + id );
+
+    //     console.log("entered edit function");
+
+    //     fetch(url,{
+    //         method: "PUT",
+    //         body: JSON.stringify({
+    //             title : editTitle,
+    //             description: editDescription,
+    //             deadline: editDeadline
+    //         }),
+    //         headers:{
+    //             "Content-type":"application/json, charset = UTF-8"
+    //         }
+    //     })
     // }
+
+    markAsDone(id){
+
+        var url = "http://localhost:5000/api/todo/delete_edit_markTask/" + id;
+        console.log(url + id );
+
+        console.log("entered delete function");
+        // console.log(id);
+
+        fetch(url ,{
+            method : "PUT",
+            body: JSON.stringify({
+
+                isCompleted: true
+            }) ,
+            headers: {
+                "Content-type": "application/json; charset = UTF-8"
+            }
+        })
+        // .then()
+
+    }
+
+    
 }
 
 export default TodoList;
