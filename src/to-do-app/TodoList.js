@@ -69,9 +69,9 @@ class TodoList extends React.Component{
                 title={item.title}
                 description ={item.description}
                 deadline = {item.deadline}
-                deleteFun= {this.deleteTodoItem}
+                deleteFun= {(id) => {this.deleteTodoItem(id)}}
                 componentFun = {this.componentDidMount}
-                editFun = {this.editTodoItem} 
+                editFun = {(id, title, description, deadline) => {this.editTodoItem(id, title, description, deadline)}} 
             />                        
         )
         );
